@@ -1,8 +1,8 @@
 require('dotenv').config()
 console.log(process.env)
 
-let Sequelize = require("sequelize");
-Sequelize = new Sequelize('postgresql://brflem2:v2_3wiBc_4TfEeZZPZPsgpJqmspdFjkU@db.bit.io/brflem2/assessment5', {
+let sequelize = require("sequelize");
+sequelize = new sequelize('postgresql://brflem2:v2_3wiBc_4TfEeZZPZPsgpJqmspdFjkU@db.bit.io/brflem2/assessment5', {
     dialect: 'postgres',
     dialectOptions: {
         ssl: {
@@ -230,5 +230,16 @@ module.exports = {
             console.log('DB seeded!')
             res.sendStatus(200)
         }).catch(err => console.log('error seeding DB', err))
+    },
+    getCountries: (req, res) => {
+        sequelize.query(
+            'SELECT * FROM countries'
+        ).then((dbRes) => {
+            res.status(200).send(dbRes[0])
+        })
+    getCities: (req, res) => {
+        sequelize.query(
+            'cities.city_id, city.name AS city, city.rating, countries.country_id, country.name AS country FROM countries INNER JOIN cities ON countries.country_id = cities.countries_id;'
+        ).then((dbRes) => {
+            res.status(200).send(dbRes[0])
     }
-}
