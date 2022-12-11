@@ -1,7 +1,16 @@
 require('dotenv').config()
 console.log(process.env)
 
-
+const Sequelize = require("sequelize");
+const sequelize = new Sequelize(process.env.CONNECTION_STRING, {
+    dialect: 'postgres',
+    dialectOptions: {
+        ssl: {
+            rejectUnauthorized: false
+        }
+    }
+})
+   
 
 module.exports = {
     seed: (req, res) => {
@@ -14,7 +23,12 @@ module.exports = {
                 name varchar
             );
 
-            *****YOUR CODE HERE*****
+            CREATE TABLE cities (
+                city_id: serial primary key,
+                name: varchar,
+                rating: integer,
+                country_id: integer foreign key,
+            );
 
             insert into countries (name)
             values ('Afghanistan'),
