@@ -1,8 +1,9 @@
 require('dotenv').config()
-console.log(process.env)
+
+const { DATABASE_URL} = process.env
 
 let sequelize = require("sequelize");
-sequelize = new sequelize('postgresql://brflem2:v2_3wiBc_4TfEeZZPZPsgpJqmspdFjkU@db.bit.io/brflem2/assessment5', {
+sequelize = new sequelize('DATABASE_URL', {
     dialect: 'postgres',
     dialectOptions: {
         ssl: {
@@ -10,6 +11,8 @@ sequelize = new sequelize('postgresql://brflem2:v2_3wiBc_4TfEeZZPZPsgpJqmspdFjkU
         }
     }
 })
+
+
    
 
 module.exports = {
@@ -25,9 +28,9 @@ module.exports = {
 
             CREATE TABLE cities (
                 city_id: serial primary key,
-                name: varchar,
-                rating: integer,
-                country_id: integer foreign key,
+                name varchar,
+                rating integer,
+                country_id integer foreign key,
             );
 
             insert into countries (name)
@@ -236,10 +239,22 @@ module.exports = {
             'SELECT * FROM countries'
         ).then((dbRes) => {
             res.status(200).send(dbRes[0])
-        })
+        }),
+createCity: (req, res) => {
+    let {name, countryId, rating} = req.body
+
+    sequelize.query('insert into cities'(name, rating, country_id) values ('${name}', `${rating}`, `${country_id}`))
+    .then((dbRes => res.status(200).send(dbRes[0])))
+    .catch(err => console.log(err))
+},
+    
     getCities: (req, res) => {
         sequelize.query(
             'cities.city_id, city.name AS city, city.rating, countries.country_id, country.name AS country FROM countries INNER JOIN cities ON countries.country_id = cities.countries_id;'
-        ).then((dbRes) => {
-            res.status(200).send(dbRes[0])
-    }
+        ).then(dbRes) => {
+            res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err))
+        }
+    },
+
+    deleteCity:(req)
